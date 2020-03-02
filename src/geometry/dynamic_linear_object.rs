@@ -60,6 +60,7 @@ impl<'a> LinearObject<'a> for DynamicLinearObject {
     fn rows_count(&self) -> usize {
         self.rows_count
     }
+
     fn cols_count(&self) -> usize {
         self.cols_count
     }
@@ -70,13 +71,19 @@ impl<'a> LinearObject<'a> for DynamicLinearObject {
 
         self.buffer[start..end].iter()
     }
+
     fn col(&'a self, index: usize) -> Self::ColIter {
-        self.buffer[index..].iter().step_by(self.cols_count)
+        self.buffer[index..]
+            .iter()
+            .step_by(self.cols_count)
     }
 
     fn rows(&'a self) -> Self::RowsIter {
-        self.buffer.chunks(self.cols_count).map(chunk_to_iter)
+        self.buffer
+            .chunks(self.cols_count)
+            .map(chunk_to_iter)
     }
+
     fn cols(&'a self) -> Self::ColsIter {
         ColsIterImpl {
             object: self,
@@ -87,6 +94,7 @@ impl<'a> LinearObject<'a> for DynamicLinearObject {
     fn data(&'a self) -> Self::ValueIter {
         self.buffer.iter()
     }
+
     fn mut_data(&'a mut self) -> Self::ValueIterMut {
         self.buffer.iter_mut()
     }
